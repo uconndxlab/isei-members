@@ -6,8 +6,11 @@
     <h1>Member Directory</h1>
 
     <form method="GET" action="{{ route('members.index') }}" class="mb-4" 
-    
-    hx-post="{{ route('members.index') }}" hx-target="#results" hx-swap="innerHTML" hx-select="#results">
+    hx-get="{{ route('members.index') }}" 
+    hx-target="#results" 
+    hx-swap="innerHTML" 
+    hx-select="#results">
+       @csrf
         <div class="row">
             <!-- Name Search -->
             <div class="col-md-3">
