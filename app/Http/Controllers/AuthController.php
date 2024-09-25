@@ -43,6 +43,17 @@ class AuthController extends Controller
 
     public function notauthorized()
     {
-        return Auth::user();
+        // if the user is not logged in, just spit out "not logged in"
+        // if the user is logged in, spit out their information, and that they are logged in
+        if (Auth::check()) {
+            return response()->json([
+                'message' => 'You are logged in',
+                'user' => Auth::user(),
+            ]);
+        }
+
+        return response()->json([
+            'message' => 'You are not logged in',
+        ]);
     }
 }
