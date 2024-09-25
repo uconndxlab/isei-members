@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+
 class AuthController extends Controller
 {
     // Show the login form
@@ -13,23 +14,35 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
-    // Handle login
     public function login(Request $request)
     {
+        // Validate the incoming request data
         $credentials = $request->validate([
             'email' => 'required|email',
             'password' => 'required',
         ]);
-
+    
+        // Attempt to authenticate the user
         if (Auth::attempt($credentials)) {
+            // Regenerate the session to prevent session fixation attacks
             $request->session()->regenerate();
+    
+            // Log the successful login attempt
+            \Log::info('User logged in: ' . $request->input('email'));
+    
+            // Redirect to intended URL or fallback to /admin
             return redirect()->intended('/admin');
         }
-
+    
+        // Log the failed authentication attempt
+        \Log::warning('Failed login attempt for email: ' . $request->input('email'));
+    
+        // Return back with an error message
         return back()->withErrors([
             'email' => 'The provided credentials do not match our records.',
         ]);
     }
+    
 
     // Handle logout
     public function logout(Request $request)
