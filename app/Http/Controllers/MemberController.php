@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Member;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use League\Csv\Writer;
 
 class MemberController extends Controller
 {
@@ -150,6 +151,17 @@ class MemberController extends Controller
         } else {
             return back()->withErrors(['update' => 'Failed to update member.']);
         }
+    }
+
+    public function export()
+    {
+        $members = Member::all();
+        $csv = \League\Csv\Writer::createFromFileObject(new \SplTempFileObject());
+        $csv->insertOne(array_keys($members->first()->toArray()));
+        $members->each(function ($member) use ($csv) {
+            $csv->insertOne($member->toArray());
+        });
+        $csv->output('members.csv');
     }
     
 

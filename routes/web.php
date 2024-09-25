@@ -25,6 +25,9 @@ Route::middleware([AdminMiddleware::class])->group(function () {
 
     // members store
     Route::post('/members', [MemberController::class, 'store'])->name('admin.members.store');
+
+    // export members as CSV
+    Route::get('/members/export', [MemberController::class, 'export'])->name('admin.members.export');
     
 });
 

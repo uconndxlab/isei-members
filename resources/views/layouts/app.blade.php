@@ -25,6 +25,12 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('admin.members.create') }}">Create Member</a>
                     </li>
+
+                    <li class="nav-item">
+                        <!-- export members -->
+                        <a class="nav-link" href="{{ route('admin.members.export') }}">Export Members</a>
+                    </li>
+
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('logout') }}">Logout</a>
                     </li>
