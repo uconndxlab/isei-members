@@ -30,4 +30,8 @@ Route::middleware([AdminMiddleware::class])->group(function () {
 
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
+
+// **/notauthorized which just displays which user is logged in, and their information
+
+Route::get('/notauthorized', [AuthController::class, 'notauthorized'])->name('notauthorized');

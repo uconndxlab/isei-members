@@ -40,4 +40,9 @@ class AuthController extends Controller
 
         return redirect('/');
     }
+
+    public function notauthorized()
+    {
+        return Auth::user();
+    }
 }
