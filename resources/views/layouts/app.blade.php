@@ -15,6 +15,38 @@
         </div>
     </nav> --}}
 
+    <!-- admin dash if user is admin -->
+    @if (optional(auth()->user())->is_admin)
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <!-- logout, create member -->
+                <a class="navbar-brand" href="{{ route('admin.index') }}">ISEI Member Directory</a>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('admin.members.create') }}">Create Member</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('logout') }}">Logout</a>
+                    </li>
+                </ul>
+
+            </div>
+        </nav>
+    @endif
+
+    <!-- messages area -->
+    @if (session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    @if (session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
+
     <div class="container mt-4">
         @yield('content')
     </div>

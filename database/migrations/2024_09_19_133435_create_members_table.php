@@ -24,7 +24,6 @@ return new class extends Migration
             $table->string('gen_int2')->nullable();
             $table->string('gen_int3')->nullable();
             $table->date('entry_date')->nullable();
-            $table->string('member_id')->unique();
             $table->timestamps();
         });
     }

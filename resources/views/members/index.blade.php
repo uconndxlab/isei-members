@@ -62,6 +62,10 @@
 
                 <th>General Interests</th>
                 <th>Entry Date</th>
+                <!-- if admin -->
+                @if (optional(auth()->user())->is_admin)
+                    <th>Actions</th>
+                @endif
             </tr>
         </thead>
         <tbody>
@@ -81,12 +85,25 @@
                         
                     </ul></td>
                     <td>{{ $member->entry_date }}</td>
+                    <!-- if admin -->
+                    @if (optional(auth()->user())->is_admin)
+                        <td>
+                            <a href="{{ route('admin.members.edit', $member) }}" class="btn btn-sm btn-primary">Edit</a>
+                            <form class="d-inline" method="POST" action="{{ route('admin.members.destroy', $member) }}">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
+                            </form>
+                        </td>
+                    @endif
                 </tr>
             @empty
                 <tr>
                     <td colspan="8">No members found.</td>
                 </tr>
             @endforelse
+
+
         </tbody>
     </table>
 

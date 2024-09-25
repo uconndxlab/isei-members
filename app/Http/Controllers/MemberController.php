@@ -64,12 +64,19 @@ class MemberController extends Controller
         return view('members.index', compact('members', 'countries', 'general_interests'));
     }
 
+    public function adminIndex()
+    {
+        $members = Member::paginate(10);
+        return view('admin.members.index', compact('members'));
+    }
+
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
-        //
+        return view('admin.members.create');
+
     }
 
     /**
@@ -88,12 +95,12 @@ class MemberController extends Controller
             'gen_int1' => 'nullable|string',
             'gen_int2' => 'nullable|string',
             'gen_int3' => 'nullable|string',
-            'entry_date' => 'nullable|date',
-            'member_id' => 'required|string|unique:members',
         ]);
     
         $member = Member::create($data);
-        return response()->json($member, 201);
+        
+        // go to the admin index page with message
+        return redirect()->route('admin.index')->with('success', 'Member created successfully.');
     }
 
     /**
@@ -109,7 +116,8 @@ class MemberController extends Controller
      */
     public function edit(Member $member)
     {
-        //
+        return view('admin.members.create', compact('member'));
+
     }
 
     /**
@@ -117,14 +125,40 @@ class MemberController extends Controller
      */
     public function update(Request $request, Member $member)
     {
-        //
+        // Validate the incoming request
+        $data = $request->validate([
+            'last_name' => 'required|string',
+            'first_name' => 'required|string',
+            'degree' => 'nullable|string',
+            'position' => 'nullable|string',
+            'organization' => 'nullable|string',
+            'email' => 'required|email|unique:members,email,' . $member->id,
+            'country' => 'nullable|string',
+            'gen_int1' => 'nullable|string',
+            'gen_int2' => 'nullable|string',
+            'gen_int3' => 'nullable|string',
+        ]);
+    
+
+    
+        // Attempt to update the member
+        $memberUpdated = $member->update($data);
+    
+        // Check if the update was successful
+        if ($memberUpdated) {
+            return redirect()->route('admin.index')->with('success', 'Member updated successfully.');
+        } else {
+            return back()->withErrors(['update' => 'Failed to update member.']);
+        }
     }
+    
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(Member $member)
     {
-        //
+        $member->delete();
+        return redirect()->route('admin.index')->with('success', 'Member deleted successfully.');
     }
 }

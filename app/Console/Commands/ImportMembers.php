@@ -49,7 +49,6 @@ class ImportMembers extends Command
                     'gen_int2'    => $record['GenInt2'],
                     'gen_int3'    => $record['GenInt3'],
                     'entry_date'  => $record['EntryDate'],
-                    'member_id'   => $record['MemberID'],
                 ]);
             }
 
