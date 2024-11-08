@@ -24,11 +24,18 @@ class MemberController extends Controller
         $members = Member::query();
     
         if ($name) {
-            $members->where(function($query) use ($name) {
-                $query->where('first_name', 'like', "%{$name}%")
-                      ->orWhere('last_name', 'like', "%{$name}%");
+            $nameParts = explode(' ', $name); // Split the name into parts by space
+            
+            $members->where(function($query) use ($nameParts) {
+                foreach ($nameParts as $part) {
+                    $query->where(function($subQuery) use ($part) {
+                        $subQuery->where('first_name', 'like', "%{$part}%")
+                                 ->orWhere('last_name', 'like', "%{$part}%");
+                    });
+                }
             });
         }
+        
     
         if ($country) {
             $members->where('country', $country);
