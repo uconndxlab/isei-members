@@ -51,6 +51,7 @@ class MemberController extends Controller
     
         // Pass filters and members to the view
         $countries = Member::select('country')->distinct()->pluck('country')->filter()->toArray();
+        $countries = collect($countries)->sort();
         
        
 
@@ -60,6 +61,8 @@ class MemberController extends Controller
         
         // Merge the arrays and get the unique values
         $general_interests = collect(array_merge($genInt1, $genInt2, $genInt3))->unique()->values();
+        // order it by name
+        $general_interests = $general_interests->sort();
         
     
         return view('members.index', compact('members', 'countries', 'general_interests'));
