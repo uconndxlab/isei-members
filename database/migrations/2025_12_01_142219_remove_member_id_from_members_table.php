@@ -12,8 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('members', function (Blueprint $table) {
-            $table->dropUnique(['member_id']); // Drop the unique index first
-            $table->dropColumn('member_id');
+            if (Schema::hasColumn('members', 'member_id')) {
+                $table->dropColumn('member_id');
+            }
         });
     }
 
