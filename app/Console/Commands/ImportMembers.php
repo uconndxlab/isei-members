@@ -9,7 +9,7 @@ use League\Csv\Reader;
 
 class ImportMembers extends Command
 {
-    protected $signature = 'import:members {file}';
+    protected $signature = 'import:members {file} {--truncate : Delete all existing members before importing}';
     protected $description = 'Import members from a CSV file';
 
     public function __construct()
@@ -27,6 +27,21 @@ class ImportMembers extends Command
             return 1;
         }
 
+        // Handle truncate option
+        if ($this->option('truncate')) {
+            $memberCount = Member::count();
+            
+            if ($memberCount > 0) {
+                if ($this->confirm("This will delete all {$memberCount} existing members. Are you sure?", false)) {
+                    Member::truncate();
+                    $this->info("Deleted {$memberCount} existing members.");
+                } else {
+                    $this->info('Import cancelled.');
+                    return 0;
+                }
+            }
+        }
+
         // Open and read the CSV file
         $csv = Reader::createFromPath($file, 'r');
         $csv->setHeaderOffset(0); // Assuming the first row contains the headers
@@ -36,27 +51,32 @@ class ImportMembers extends Command
         DB::beginTransaction();
 
         try {
+            $importedCount = 0;
+            
             foreach ($records as $record) {
                 Member::create([
-                    'last_name'   => $record['LastName'],
-                    'first_name'  => $record['FirstName'],
-                    'degree'      => $record['Degree'],
-                    'position'    => $record['Position'],
-                    'organization'=> $record['Organization'],
-                    'email'       => $record['Email'],
-                    'country'     => $record['Country'],
-                    'gen_int1'    => $record['GenInt1'],
-                    'gen_int2'    => $record['GenInt2'],
-                    'gen_int3'    => $record['GenInt3'],
-                    'entry_date'  => $record['EntryDate'],
+                    'last_name'   => $record['last_name'] ?? '',
+                    'first_name'  => $record['first_name'] ?? '',
+                    'degree'      => $record['degree'] ?? '',
+                    'position'    => $record['position'] ?? '',
+                    'organization'=> $record['organization'] ?? '',
+                    'email'       => $record['email'] ?? '',
+                    'country'     => $record['country'] ?? '',
+                    'gen_int1'    => $record['gen_int1'] ?? '',
+                    'gen_int2'    => $record['gen_int2'] ?? '',
+                    'gen_int3'    => $record['gen_int3'] ?? '',
+                    'entry_date'  => null,
                 ]);
+                
+                $importedCount++;
             }
 
             DB::commit();
-            $this->info('Members imported successfully.');
+            $this->info("Successfully imported {$importedCount} members.");
         } catch (\Exception $e) {
             DB::rollBack();
             $this->error('An error occurred: ' . $e->getMessage());
+            return 1;
         }
 
         return 0;

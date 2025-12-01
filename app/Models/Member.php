@@ -20,7 +20,6 @@ class Member extends Model
         'gen_int2',
         'gen_int3',
         'entry_date',
-        'member_id',
     ];
     use HasFactory;
 }
