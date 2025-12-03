@@ -54,7 +54,7 @@ class MemberController extends Controller
         }
     
         // Get paginated results
-        $members = $members->paginate(10);
+        $members = $members->paginate(40)->withQueryString();
     
         // Pass filters and members to the view
         $countries = Member::select('country')->distinct()->pluck('country')->filter()->toArray();

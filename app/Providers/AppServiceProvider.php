@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\View;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -21,5 +22,11 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Paginator::useBootstrapFive();
+        
+        // Share iframe detection with all views
+        View::composer('*', function ($view) {
+            $isIframe = request()->header('Sec-Fetch-Dest') === 'iframe';
+            $view->with('isIframe', $isIframe);
+        });
     }
 }

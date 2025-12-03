@@ -58,5 +58,29 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    @if($isIframe)
+    <script>
+        // Send height updates to parent window
+        function sendHeightToParent() {
+            const height = document.documentElement.scrollHeight;
+            window.parent.postMessage({
+                type: 'iframe-height',
+                height: height
+            }, '*');
+        }
+
+        window.addEventListener('load', sendHeightToParent);
+        window.addEventListener('resize', sendHeightToParent);
+        
+        const observer = new MutationObserver(sendHeightToParent);
+        observer.observe(document.body, { childList: true, subtree: true, attributes: true });
+        
+        document.body.addEventListener('htmx:afterSwap', sendHeightToParent);
+        document.body.addEventListener('htmx:afterSettle', sendHeightToParent);
+        
+        sendHeightToParent();
+    </script>
+    @endif
 </body>
 </html>
