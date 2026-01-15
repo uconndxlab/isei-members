@@ -275,7 +275,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const memberName = this.dataset.memberName;
             
             document.getElementById('memberName').textContent = memberName;
-            document.getElementById('deleteForm').action = `/admin/members/${memberId}`;
+            document.getElementById('deleteForm').action = `/members/${memberId}`;
             
             new bootstrap.Modal(document.getElementById('deleteModal')).show();
         });

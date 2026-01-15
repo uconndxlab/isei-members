@@ -11,6 +11,13 @@ Route::get('/', [MemberController::class, 'index'])->name('members.index');
 // Apply middleware to a route
 Route::middleware([AdminMiddleware::class])->group(function () {
     Route::get('/admin', [MemberController::class, 'index'])->name('admin.index');
+    
+    // members create (must be before {member} routes)
+    Route::get('/members/create', [MemberController::class, 'create'])->name('admin.members.create');
+
+    // export members as CSV (must be before {member} routes)
+    Route::get('/members/export', [MemberController::class, 'export'])->name('admin.members.export');
+    
     // members edit
     Route::get('/members/{member}/edit', [MemberController::class, 'edit'])->name('admin.members.edit');
 
@@ -20,14 +27,8 @@ Route::middleware([AdminMiddleware::class])->group(function () {
     // members destroy
     Route::delete('/members/{member}', [MemberController::class, 'destroy'])->name('admin.members.destroy');
 
-    // members create
-    Route::get('/members/create', [MemberController::class, 'create'])->name('admin.members.create');
-
     // members store
     Route::post('/members', [MemberController::class, 'store'])->name('admin.members.store');
-
-    // export members as CSV
-    Route::get('/members/export', [MemberController::class, 'export'])->name('admin.members.export');
     
 });
 
